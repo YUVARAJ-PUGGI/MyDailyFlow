@@ -47,12 +47,26 @@ export const GamificationProvider = ({ children }) => {
         setXp(newXp);
     };
 
+    /**
+     * Attempts to spend XP.
+     * @param {number} amount - Amount of XP to spend
+     * @returns {boolean} - true if successful, false if insufficient funds
+     */
+    const spendXP = (amount) => {
+        if (xp >= amount) {
+            setXp(prev => prev - amount);
+            return true;
+        }
+        return false;
+    };
+
     const value = {
         xp,
         level,
         streak,
         nextLevelXp,
         addXP,
+        spendXP,
         levelUp,
     };
 

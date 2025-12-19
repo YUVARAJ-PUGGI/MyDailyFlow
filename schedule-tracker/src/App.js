@@ -7,6 +7,7 @@ import ScheduleTracker from './components/ScheduleTracker';
 import './App.css';
 
 import { GamificationProvider } from './context/GamificationContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 /**
  * Main App Component
@@ -15,39 +16,25 @@ import { GamificationProvider } from './context/GamificationContext';
 function App() {
   const [showLanding, setShowLanding] = useState(true);
 
-  const handleGetStarted = () => {
-    setShowLanding(false);
-  };
-
-  const handleBackToHome = () => {
-    setShowLanding(true);
-  };
+  if (showLanding) {
+    return (
+      <GamificationProvider>
+        <ThemeProvider>
+          <LandingPage onGetStarted={() => setShowLanding(false)} />
+        </ThemeProvider>
+      </GamificationProvider>
+    );
+  }
 
   return (
-    <ErrorBoundary>
-      <GamificationProvider>
-        <div className="app">
-          {showLanding ? (
-            <LandingPage onGetStarted={handleGetStarted} />
-          ) : (
-            <ScheduleTracker onBackToHome={handleBackToHome} />
-          )}
+    <GamificationProvider>
+      <ThemeProvider>
+        <div className="App">
+          <ScheduleTracker />
+          <ToastContainer position="bottom-right" theme="colored" />
         </div>
-
-        <ToastContainer
-          position="bottom-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={true}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-        />
-      </GamificationProvider>
-    </ErrorBoundary>
+      </ThemeProvider>
+    </GamificationProvider>
   );
 }
 

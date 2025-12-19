@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react'; // Refresh
 import PropTypes from 'prop-types';
 import { ArrowRight, Zap, Shield, BarChart3, Code, Cpu, BookOpen } from 'lucide-react';
 import Logo from './Logo';
+import InstallPWA from './InstallPWA';
 
 /**
  * LandingPage Component
@@ -48,26 +49,30 @@ function LandingPage({ onGetStarted }) {
 
       {/* Hero Section */}
       <header className="hero">
-        <div className="hero-content">
-          <div className="hero-badge">
-            <span className="badge-text">Built for Engineering Students</span>
+        <div className="hero-content" style={{ animation: 'fadeInUp 0.8s ease' }}>
+          <div style={{ display: 'inline-block', marginBottom: '1.5rem', animation: 'float 6s ease-in-out infinite' }}>
+            <Logo size="large" />
           </div>
+
           <h1 className="hero-title">
-            Master Your Time, <br />
-            <span className="text-gradient">Ace Your Goals.</span>
+            Own Your Day.<br />
+            <span className="text-gradient">Master Your Craft.</span>
           </h1>
+
           <p className="hero-subtitle">
-            The intelligent schedule tracker designed to help you balance complex coding projects,
-            DSA practice, and academic life with ease.
+            The ultra-premium schedule tracker for high-performance engineers.
+            Gamified, smart, and designed for deep work.
           </p>
 
-          <div className="hero-actions">
-            <button onClick={onGetStarted} className="btn-primary-large">
-              Start Scheduling Now <ArrowRight size={20} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+            <button className="cta-button" onClick={onGetStarted}>
+              Initialize System <Rocket size={20} />
             </button>
-            <button className="btn-secondary-large">
-              Learn More
-            </button>
+
+            {/* PWA Install Button (Only shows if compatible) */}
+            <div style={{ width: '200px' }}>
+              <InstallPWA />
+            </div>
           </div>
         </div>
 
