@@ -1,353 +1,270 @@
-import React, { useState } from 'react';
-import { 
-  Calendar, Brain, BarChart3, Target, Clock, Zap,
-  CheckCircle2, ArrowRight, ChevronDown,
-  Menu, X, Code, BookOpen, Dumbbell, Heart, FlaskConical
-} from 'lucide-react';
-import './LandingPage.css';
+import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
+import { ArrowRight, Calendar, Clock, BarChart3, Zap, Shield, Sparkles } from 'lucide-react';
 
-const LandingPage = ({ onGetStarted }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-    setMobileMenuOpen(false);
+/**
+ * LandingPage Component (3D Tech Upgrade)
+ */
+function LandingPage({ onGetStarted }) {
+  const tiltRef = useRef(null);
+
+  // Simple 3D Tilt Effect on Mouse Move
+  const handleMouseMove = (e) => {
+    if (!tiltRef.current) return;
+    const card = tiltRef.current;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = ((y - centerY) / centerY) * -10; // Max 10deg rotation
+    const rotateY = ((x - centerX) / centerX) * 10;
+
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
   };
 
-  const toggleFaq = (index) => {
-    setOpenFaqIndex(openFaqIndex === index ? null : index);
+  const handleMouseLeave = () => {
+    if (!tiltRef.current) return;
+    tiltRef.current.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
   };
-
-  const features = [
-    {
-      icon: <Brain />,
-      title: 'AI-Powered Scheduling',
-      description: 'Let our intelligent AI optimize your daily schedule based on your goals, energy levels, and deadlines.'
-    },
-    {
-      icon: <Target />,
-      title: 'Smart Task Management',
-      description: 'Organize tasks with categories, priorities, and time estimates. Never miss an important deadline.'
-    },
-    {
-      icon: <BarChart3 />,
-      title: 'Time Analytics',
-      description: 'Visualize how you spend your time with detailed charts and insights to improve productivity.'
-    },
-    {
-      icon: <CheckCircle2 />,
-      title: 'Goal Tracking',
-      description: 'Set and track weekly/monthly goals. Monitor progress with visual indicators and achievement badges.'
-    },
-    {
-      icon: <Clock />,
-      title: 'Deadline Reminders',
-      description: 'Get smart notifications before deadlines. Customize reminder timing for different task types.'
-    },
-    {
-      icon: <Zap />,
-      title: 'Quick Actions',
-      description: 'Add tasks with voice commands, quick shortcuts, and templates for recurring activities.'
-    }
-  ];
-
-  const benefits = [
-    {
-      icon: <Code />,
-      title: 'Competitive Programming',
-      description: 'Schedule daily DSA practice, track solved problems, and prepare for coding contests systematically.',
-      color: '#d97706',
-      bgColor: 'rgba(217, 119, 6, 0.1)'
-    },
-    {
-      icon: <Target />,
-      title: 'Project Management',
-      description: 'Break down web development projects into tasks, set milestones, and track progress efficiently.',
-      color: '#be185d',
-      bgColor: 'rgba(190, 24, 93, 0.1)'
-    },
-    {
-      icon: <BookOpen />,
-      title: 'Exam Preparation',
-      description: 'Create study schedules, allocate revision time, and ensure comprehensive exam coverage.',
-      color: '#ca8a04',
-      bgColor: 'rgba(202, 138, 4, 0.1)'
-    },
-    {
-      icon: <FlaskConical />,
-      title: 'Labs & Assignments',
-      description: 'Manage college labs and assignments with dedicated time blocks and deadline tracking.',
-      color: '#ea580c',
-      bgColor: 'rgba(234, 88, 12, 0.1)'
-    },
-    {
-      icon: <Dumbbell />,
-      title: 'Fitness & Wellness',
-      description: 'Maintain work-life balance with scheduled workout sessions and wellness activities.',
-      color: '#dc2626',
-      bgColor: 'rgba(220, 38, 38, 0.1)'
-    },
-    {
-      icon: <Heart />,
-      title: 'Balanced Lifestyle',
-      description: 'Ensure time for breaks, hobbies, and social activities while staying productive.',
-      color: '#16a34a',
-      bgColor: 'rgba(22, 163, 74, 0.1)'
-    }
-  ];
-
-  const steps = [
-    {
-      number: '01',
-      title: 'Sign Up Free',
-      description: 'Create your account in seconds. No credit card required, no commitment.'
-    },
-    {
-      number: '02',
-      title: 'Add Your Tasks',
-      description: 'Import existing tasks or start fresh. Categorize and set priorities effortlessly.'
-    },
-    {
-      number: '03',
-      title: 'AI Optimizes Your Day',
-      description: 'Our smart algorithm creates the perfect schedule based on your preferences and goals.'
-    },
-    {
-      number: '04',
-      title: 'Track & Improve',
-      description: 'Monitor progress with analytics. Adjust and refine your productivity system over time.'
-    }
-  ];
-
-  const faqs = [
-    {
-      question: 'Is MyDailyFlow really free?',
-      answer: 'Yes! MyDailyFlow is completely free to use. We believe productivity tools should be accessible to all students. No hidden fees, no premium tiers.'
-    },
-    {
-      question: 'How does the AI scheduling work?',
-      answer: 'Our AI analyzes your tasks, deadlines, energy patterns, and preferences to create an optimized daily schedule. It learns from your behavior to improve suggestions over time.'
-    },
-    {
-      question: 'Can I use it on mobile devices?',
-      answer: 'Absolutely! MyDailyFlow is fully responsive and works seamlessly on desktop, tablet, and mobile devices. Access your schedule anywhere, anytime.'
-    },
-    {
-      question: 'Do you integrate with other tools?',
-      answer: 'We support calendar sync (Google Calendar, Outlook), task imports from popular tools, and offer API access for custom integrations.'
-    },
-    {
-      question: 'Is my data secure and private?',
-      answer: 'Your privacy is our priority. We use industry-standard encryption, never share your data with third parties, and you can export or delete your data anytime.'
-    },
-    {
-      question: 'Can I collaborate with study groups?',
-      answer: 'Yes! You can share tasks, create group schedules, and collaborate on projects with classmates. Perfect for team assignments and study sessions.'
-    }
-  ];
 
   return (
     <div className="landing-page">
-      {/* Navigation Header */}
-      <nav className="nav-header">
-        <div className="nav-content">
-          <div className="nav-logo" onClick={() => scrollToSection('hero')}>
-            <Calendar className="logo-icon" />
-            <span>MyDailyFlow</span>
-          </div>
+      {/* 3D Animated Background */}
+      <div className="cyber-grid-bg"></div>
+      <div className="floating-orb orb-1"></div>
+      <div className="floating-orb orb-2"></div>
 
-          <div className="nav-links">
-            <a href="#features" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('features'); }}>
-              Features
-            </a>
-            <a href="#benefits" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('benefits'); }}>
-              Benefits
-            </a>
-            <a href="#how-it-works" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('how-it-works'); }}>
-              How It Works
-            </a>
-            <a href="#faq" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('faq'); }}>
-              FAQ
-            </a>
+      {/* Navigation */}
+      <nav className="glass-header">
+        <div className="header-content">
+          <div className="header-title">
+            <Calendar color="#00f0ff" size={32} />
+            <h1 className="gradient-text" style={{ fontSize: '24px', margin: 0 }}>
+              MyDaily<span style={{ color: 'white' }}>Flow</span>
+            </h1>
           </div>
-
-          <div className="nav-actions">
-            <button className="btn-primary" onClick={onGetStarted}>
-              Get Started
-            </button>
-          </div>
-
-          <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          <button onClick={onGetStarted} className="btn-primary" style={{ width: 'auto', padding: '10px 24px', marginTop: 0 }}>
+            Get Started
           </button>
         </div>
-
-        {mobileMenuOpen && (
-          <div className="mobile-menu open">
-            <a href="#features" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('features'); }}>
-              Features
-            </a>
-            <a href="#benefits" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('benefits'); }}>
-              Benefits
-            </a>
-            <a href="#how-it-works" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('how-it-works'); }}>
-              How It Works
-            </a>
-            <a href="#faq" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('faq'); }}>
-              FAQ
-            </a>
-            <button className="btn-primary mobile-cta" onClick={onGetStarted}>
-              Get Started
-            </button>
-          </div>
-        )}
       </nav>
 
       {/* Hero Section */}
-      <section id="hero" className="hero-section">
-        <div className="hero-content">
-          <div className="hero-badge">
-            <Brain size={16} />
-            <span>AI-Powered Schedule Management</span>
+      <section className="hero-section" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: '800px', padding: '0 20px' }}>
+          <div
+            className="feature-chip fade-in"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 16px',
+              background: 'rgba(0, 240, 255, 0.1)',
+              border: '1px solid #00f0ff',
+              borderRadius: '99px',
+              color: '#00f0ff',
+              marginBottom: '24px',
+              fontSize: '14px',
+              fontWeight: '600',
+              boxShadow: '0 0 15px rgba(0, 240, 255, 0.3)'
+            }}
+          >
+            <Sparkles size={16} />
+            <span>Next Gen Task Management</span>
           </div>
 
-          <h1 className="hero-title">Master Your Time, Ace Your Goals</h1>
+          <h1 className="gradient-text fade-in" style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)', fontWeight: '800', lineHeight: 1.1, marginBottom: '24px' }}>
+            Master Your Time in <br />
+            <span style={{ WebkitTextStroke: '1px rgba(255,255,255,0.3)', color: 'transparent' }}>3D Space</span>
+          </h1>
 
-          <p className="hero-subtitle">
-            The ultimate productivity app for engineering students. Balance coding practice, projects, 
-            exams, and wellness with AI-optimized scheduling.
+          <p className="fade-in" style={{ fontSize: '1.25rem', color: 'var(--text-muted)', marginBottom: '40px', maxWidth: '600px', margin: '0 auto 40px' }}>
+            Experience the future of productivity with our immersive, high-performance schedule tracker. Built for the modern web.
           </p>
 
-          <div className="hero-buttons">
-            <button className="btn-primary btn-large" onClick={onGetStarted}>
-              Get Started
-              <ArrowRight size={20} />
+          <div
+            ref={tiltRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className="glass-panel tilt-card fade-in"
+            style={{ display: 'inline-block', padding: '40px', cursor: 'default' }}
+          >
+            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '30px' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '32px', fontWeight: 'bold', color: 'white' }}>10x</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Focus</div>
+              </div>
+              <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '32px', fontWeight: 'bold', color: 'white' }}>100%</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Control</div>
+              </div>
+            </div>
+
+            <button
+              onClick={onGetStarted}
+              className="btn-primary"
+              style={{ fontSize: '18px', padding: '16px 40px', display: 'flex', alignItems: 'center', gap: '12px', margin: '0 0' }}
+            >
+              Get Started Now <ArrowRight size={20} />
             </button>
-            <button className="btn-secondary btn-large" onClick={() => scrollToSection('how-it-works')}>
-              See How It Works
-            </button>
-          </div>
-
-          <div className="hero-stats">
-            <div className="stat-item">
-              <div className="stat-number">5,000+</div>
-              <div className="stat-label">Active Students</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-number">50K+</div>
-              <div className="stat-label">Tasks Completed</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-number">98%</div>
-              <div className="stat-label">Satisfaction Rate</div>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="section features-section">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">Powerful Features Built for You</h2>
-            <p className="section-subtitle">
-              Everything you need to stay organized, focused, and productive throughout your engineering journey.
-            </p>
-          </div>
+      {/* Features Grid */}
+      <section style={{ padding: '80px 20px', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <h2 className="gradient-text" style={{ fontSize: '36px', textAlign: 'center', marginBottom: '60px', fontWeight: '800' }}>
+            Why Choose MyDailyFlow?
+          </h2>
 
-          <div className="features-grid">
-            {features.map((feature, index) => (
-              <div key={index} className="feature-card">
-                <div className="feature-icon-wrapper">
-                  {React.cloneElement(feature.icon, { className: 'feature-icon' })}
-                </div>
-                <h3 className="feature-title">{feature.title}</h3>
-                <p className="feature-description">{feature.description}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+            <div className="glass-panel tilt-card">
+              <div style={{ background: 'rgba(112, 0, 255, 0.2)', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                <Zap size={24} color="#7000ff" />
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white', marginBottom: '12px' }}>Lightning Fast</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                Optimized for speed with instant interactions and zero lag. Feel the power of modern web tech.
+              </p>
+            </div>
 
-      {/* Benefits Section */}
-      <section id="benefits" className="section">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">Perfect for Every Aspect of Student Life</h2>
-            <p className="section-subtitle">
-              From competitive coding to fitness goals, manage everything in one unified platform.
-            </p>
-          </div>
-
-          <div className="benefits-grid">
-            {benefits.map((benefit, index) => (
-              <div 
-                key={index} 
-                className="benefit-card" 
-                style={{ borderLeftColor: benefit.color }}
-              >
-                <div className="benefit-icon" style={{ backgroundColor: benefit.bgColor }}>
-                  {React.cloneElement(benefit.icon, { 
-                    size: 24, 
-                    style: { color: benefit.color } 
-                  })}
-                </div>
-                <h3 className="benefit-title">{benefit.title}</h3>
-                <p className="benefit-description">{benefit.description}</p>
+            <div className="glass-panel tilt-card" style={{ transform: 'translateY(20px)' }}>
+              <div style={{ background: 'rgba(0, 240, 255, 0.2)', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                <Shield size={24} color="#00f0ff" />
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white', marginBottom: '12px' }}>Secure & Private</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                Your data stays local. No cloud leaks, just pure localized productivity storage.
+              </p>
+            </div>
 
-      {/* How It Works Section */}
-      <section id="how-it-works" className="section how-it-works-section">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">Get Started in 4 Simple Steps</h2>
-            <p className="section-subtitle">
-              Start optimizing your productivity in minutes, not hours. No complex setup required.
-            </p>
-          </div>
-
-          <div className="steps-container">
-            {steps.map((step, index) => (
-              <div key={index} className="step-card">
-                <div className="step-number">{step.number}</div>
-                <h3 className="step-title">{step.title}</h3>
-                <p className="step-description">{step.description}</p>
+            <div className="glass-panel tilt-card">
+              <div style={{ background: 'rgba(255, 0, 85, 0.2)', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                <BarChart3 size={24} color="#ff0055" />
               </div>
-            ))}
+              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white', marginBottom: '12px' }}>Visual Analytics</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                Track your progress with beautiful, real-time data visualization and insights.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Pricing/CTA Section */}
+      {/* Benefits for Engineering Students */}
+      <section style={{ padding: '80px 20px', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <h2 className="gradient-text" style={{ fontSize: '36px', textAlign: 'center', marginBottom: '60px', fontWeight: '800' }}>
+            Perfect for Engineering Students
+          </h2>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+            <div className="glass-panel tilt-card">
+              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#00f0ff', marginBottom: '12px' }}>DSA & Coding</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                Dedicated categories for Data Structures and Algorithms practice. Track your coding streaks.
+              </p>
+            </div>
+
+            <div className="glass-panel tilt-card">
+              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#7000ff', marginBottom: '12px' }}>Project Management</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                Break down complex final year projects into manageable sprints and tasks.
+              </p>
+            </div>
+
+            <div className="glass-panel tilt-card">
+              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#ff0055', marginBottom: '12px' }}>Exam Prep</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                Optimize your study schedule with time-blocking for optimal retention.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section style={{ padding: '80px 20px', position: 'relative', zIndex: 1, paddingBottom: '120px' }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
+          <h2 className="gradient-text" style={{ fontSize: '36px', marginBottom: '60px', fontWeight: '800' }}>
+            How It Works
+          </h2>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '40px', textAlign: 'left' }}>
+            <div className="glass-panel tilt-card" style={{ flex: '1 1 300px', position: 'relative' }}>
+              <div style={{ fontSize: '80px', fontWeight: '900', color: 'rgba(255,255,255,0.05)', position: 'absolute', top: '10px', right: '20px' }}>1</div>
+              <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: 'white', marginBottom: '16px' }}>Plan</h3>
+              <p style={{ color: 'var(--text-muted)' }}>Add your tasks for the day. Categorize them into DSA, Dev, or Study.</p>
+            </div>
+
+            <div className="glass-panel tilt-card" style={{ flex: '1 1 300px', position: 'relative' }}>
+              <div style={{ fontSize: '80px', fontWeight: '900', color: 'rgba(255,255,255,0.05)', position: 'absolute', top: '10px', right: '20px' }}>2</div>
+              <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: 'white', marginBottom: '16px' }}>Focus</h3>
+              <p style={{ color: 'var(--text-muted)' }}>Execute your tasks. The UI stays out of your way so you can code.</p>
+            </div>
+
+            <div className="glass-panel tilt-card" style={{ flex: '1 1 300px', position: 'relative' }}>
+              <div style={{ fontSize: '80px', fontWeight: '900', color: 'rgba(255,255,255,0.05)', position: 'absolute', top: '10px', right: '20px' }}>3</div>
+              <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: 'white', marginBottom: '16px' }}>Track</h3>
+              <p style={{ color: 'var(--text-muted)' }}>Mark tasks complete and visualize your productivity in the stats dashboard.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-brand">
-            <div className="footer-logo">
-              <Calendar size={32} />
-              <span>MyDailyFlow</span>
+      <footer style={{
+        borderTop: '1px solid rgba(255,255,255,0.1)',
+        padding: '60px 20px',
+        position: 'relative',
+        zIndex: 1,
+        background: 'rgba(0,0,0,0.4)',
+        backdropFilter: 'blur(10px)'
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '12px' }}>
+              <Calendar color="#00f0ff" size={28} />
+              <h2 className="gradient-text" style={{ fontSize: '24px', margin: 0, fontWeight: 'bold' }}>
+                MyDaily<span style={{ color: 'white' }}>Flow</span>
+              </h2>
             </div>
-            <p className="footer-description">
-              Empowering engineering students to master their time, achieve their goals, 
-              and maintain a balanced lifestyle through intelligent scheduling.
+            <p style={{ color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
+              Empowering engineering students to master their time, achieve their goals, and maintain a balanced lifestyle through intelligent scheduling.
             </p>
           </div>
-        </div>
 
-        <div className="footer-bottom"> Built with ❤️ for students.
-          <p>&copy; 2025 MyDailyFlow. All rights reserved.</p>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '24px',
+            margin: '32px 0',
+            color: 'white',
+            fontSize: '14px',
+            flexWrap: 'wrap'
+          }}>
+            <span style={{ color: 'var(--text-muted)', cursor: 'pointer' }}>Cookie Policy</span>
+            <span style={{ color: 'var(--text-muted)' }}>•</span>
+            <span style={{ color: 'var(--text-muted)' }}>Built with ❤️ for students.</span>
+          </div>
+
+          <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px' }}>
+            © 2025 MyDailyFlow. All rights reserved.
+          </div>
         </div>
       </footer>
     </div>
   );
+}
+
+LandingPage.propTypes = {
+  onGetStarted: PropTypes.func.isRequired
 };
 
 export default LandingPage;

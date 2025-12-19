@@ -14,12 +14,12 @@ function TimeStats({ tasks }) {
       if (task.completed) {
         const start = new Date(`2000-01-01T${task.startTime24 || task.startTime || '00:00'}`);
         const end = new Date(`2000-01-01T${task.endTime24 || task.endTime || '00:00'}`);
-        
+
         // Handle next day scenarios
         if (end < start) {
           end.setDate(end.getDate() + 1);
         }
-        
+
         const hours = (end - start) / (1000 * 60 * 60);
         stats[task.category] = (stats[task.category] || 0) + hours;
       }
@@ -31,67 +31,54 @@ function TimeStats({ tasks }) {
   const totalHours = Object.values(timeStats).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="glass">
-      <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px'}}>
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
         <div className="icon-badge gradient-blue">
           <BarChart3 size={24} color="white" />
         </div>
-        <h3 style={{fontSize: '18px', fontWeight: 'bold', color: '#1f2937', margin: 0}}>
+        <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: 'white', margin: 0 }}>
           Time Spent Today
         </h3>
       </div>
-      
+
       {Object.keys(timeStats).length === 0 ? (
-        <div style={{
-          padding: '32px 16px',
-          textAlign: 'center',
-          color: '#9ca3af'
-        }}>
-          <div style={{fontSize: '32px', marginBottom: '8px'}}>📊</div>
-          <p style={{fontSize: '14px', margin: 0}}>
+        <div className="empty-state">
+          <div className="empty-state-icon">📊</div>
+          <p className="empty-state-text">
             Complete tasks to see time statistics
           </p>
         </div>
       ) : (
         <>
-          <div style={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            borderRadius: '16px',
-            padding: '20px',
-            marginBottom: '20px',
-            color: 'white',
-            textAlign: 'center'
-          }}>
-            <div style={{fontSize: '12px', opacity: 0.9, marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px'}}>
+          <div className="stat-box">
+            <span className="stat-label">
               Total Time Completed
-            </div>
-            <div style={{fontSize: '32px', fontWeight: 'bold'}}>
+            </span>
+            <span className="stat-value">
               {totalHours.toFixed(1)}h
-            </div>
+            </span>
           </div>
 
-          <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {Object.entries(timeStats).map(([category, hours]) => {
               const catStyle = getCategoryStyle(category);
               return (
-                <div 
+                <div
                   key={category}
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '12px 16px',
-                    background: catStyle.bg,
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.1)',
                     borderRadius: '12px',
-                    transition: 'transform 0.2s'
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(4px)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(0)'}
                 >
-                  <span style={{color: catStyle.color, fontWeight: '600', fontSize: '14px'}}>
+                  <span style={{ color: catStyle.color, fontWeight: '600', fontSize: '14px' }}>
                     {category}
                   </span>
-                  <span style={{color: catStyle.color, fontWeight: '700', fontSize: '16px'}}>
+                  <span style={{ color: 'white', fontWeight: '700', fontSize: '16px' }}>
                     {hours.toFixed(1)}h
                   </span>
                 </div>

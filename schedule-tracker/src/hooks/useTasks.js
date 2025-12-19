@@ -3,7 +3,7 @@ import { loadTasks, saveTasks } from '../utils/localStorage';
 
 /**
  * Custom hook for managing tasks with localStorage persistence
- * @returns {object} { tasks, addTask, updateTask, deleteTask, clearAllTasks }
+ * @returns {object} { tasks, addTask, updateTask, deleteTask, toggleTaskCompletion, clearAllTasks, getTasksByDate }
  */
 const useTasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -14,7 +14,14 @@ const useTasks = () => {
   useEffect(() => {
     try {
       const savedTasks = loadTasks();
-      setTasks(savedTasks);
+      // Migration: Ensure all tasks have a status and priority
+      const migratedTasks = savedTasks.map(task => ({
+        ...task,
+        status: task.status || (task.completed ? 'done' : 'todo'),
+        priority: task.priority || 3, // Default priority Medium
+        completedAt: task.completedAt || (task.completed ? new Date().toISOString() : null)
+      }));
+      setTasks(migratedTasks);
       setLoading(false);
     } catch (err) {
       setError('Failed to load tasks');
@@ -42,9 +49,12 @@ const useTasks = () => {
       ...taskData,
       id: Date.now(),
       createdAt: new Date().toISOString(),
-      completed: false
+      status: 'todo',
+      priority: taskData.priority || 3,
+      completedAt: null,
+      completed: false // Keep for backward compatibility if needed, but rely on status
     };
-    
+
     setTasks(prevTasks => [...prevTasks, newTask]);
     return newTask;
   };
@@ -76,9 +86,18 @@ const useTasks = () => {
    */
   const toggleTaskCompletion = (taskId) => {
     setTasks(prevTasks =>
-      prevTasks.map(task =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
+      prevTasks.map(task => {
+        if (task.id === taskId) {
+          const newStatus = task.status === 'done' ? 'todo' : 'done';
+          return {
+            ...task,
+            status: newStatus,
+            completed: newStatus === 'done',
+            completedAt: newStatus === 'done' ? new Date().toISOString() : null
+          };
+        }
+        return task;
+      })
     );
   };
 

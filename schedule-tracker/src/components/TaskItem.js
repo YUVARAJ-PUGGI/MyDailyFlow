@@ -21,7 +21,7 @@ const calculateDuration = (startTime, endTime) => {
 
 function TaskItem({ task, onToggleComplete, onDeleteTask }) {
   const catStyle = getCategoryStyle(task.category);
-  
+
   // Calculate task duration
   const duration = task.startTime24 && task.endTime24
     ? formatDuration(calculateDuration(task.startTime24, task.endTime24))
@@ -40,67 +40,71 @@ function TaskItem({ task, onToggleComplete, onDeleteTask }) {
   };
 
   return (
-    <div className={`task-item-enhanced ${task.completed ? 'completed' : ''}`}>
-      <div className="task-content">
-        <button
-          onClick={handleToggle}
-          className="task-checkbox"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-          aria-label={task.completed ? 'Mark incomplete' : 'Mark complete'}
-          title={task.completed ? 'Mark incomplete' : 'Mark complete'}
-        >
-          {task.completed ? (
-            <CheckCircle size={24} color="#10b981" />
-          ) : (
-            <Circle size={24} color="#d1d5db" />
-          )}
-        </button>
-        
-        <div>
-          <div className="task-title">{task.title}</div>
-          
-          <div className="task-meta">
-            <div className="task-meta-item">
-              <span 
-                className="task-badge"
-                style={{ background: catStyle.bg, color: catStyle.color }}
+    <div className={`task-item ${task.completed ? 'task-completed' : ''}`}>
+      <div className="task-item-content">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <button
+            onClick={handleToggle}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              color: task.completed ? '#10b981' : '#cbd5e1'
+            }}
+            aria-label={task.completed ? 'Mark incomplete' : 'Mark complete'}
+          >
+            {task.completed ? (
+              <CheckCircle size={24} />
+            ) : (
+              <Circle size={24} />
+            )}
+          </button>
+
+          <div>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', margin: '0 0 4px 0', color: 'white' }}>
+              {task.title}
+            </h3>
+
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <span
+                style={{
+                  background: catStyle.bg,
+                  color: catStyle.color,
+                  padding: '2px 8px',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  fontWeight: '600'
+                }}
               >
                 {task.category}
               </span>
-            </div>
-            <div className="task-meta-item">
-              <span>
+              <span style={{ fontSize: '13px', color: '#94a3b8' }}>
                 {task.displayStart} - {task.displayEnd}
               </span>
-            </div>
-            {duration && (
-              <div className="task-meta-item">
-                <span style={{color: '#818cf8', fontWeight: '600'}}>
-                  ({duration})
+              {duration && (
+                <span style={{ fontSize: '13px', color: '#818cf8', fontWeight: '500' }}>
+                  {duration}
                 </span>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="task-actions">
-        <button
-          onClick={handleToggle}
-          className="task-btn task-btn-complete"
-          title={task.completed ? 'Mark incomplete' : 'Mark complete'}
-        >
-          {task.completed ? '✓' : '○'}
-        </button>
+      <div className="task-item-actions">
         <button
           onClick={handleDelete}
-          className="task-btn task-btn-delete"
+          className="btn-danger"
           title="Delete task"
         >
           <Trash2 size={16} />
         </button>
       </div>
     </div>
+
   );
 }
 
