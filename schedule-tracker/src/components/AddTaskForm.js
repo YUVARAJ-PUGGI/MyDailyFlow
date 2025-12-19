@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Plus, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Plus, AlertTriangle, ArrowRight, Type, Tag, Flag, Clock, Calendar } from 'lucide-react';
 import { toast } from 'react-toastify';
 import useForm from '../hooks/useForm';
 import { getCategoryNames } from '../constants/categories';
@@ -8,8 +8,8 @@ import { convertTo24Hour } from '../utils/timeUtils';
 import { detectConflict, findNextAvailableSlot } from '../utils/schedulingUtils';
 
 /**
- * AddTaskForm Component
- * Form for creating new tasks with validation, priority, and conflict detection.
+ * AddTaskForm Component (Modern Redesign)
+ * Features distinct input boxes with icons and high-end typography.
  */
 function AddTaskForm({ onAddTask, currentTasks = [] }) {
   const categories = getCategoryNames();
@@ -41,38 +41,25 @@ function AddTaskForm({ onAddTask, currentTasks = [] }) {
       // Conflict Detection
       const conflictingTask = detectConflict(newTask, currentTasks);
       if (conflictingTask) {
-        setConflict({
-          newTask,
-          conflictingTask
-        });
-        return; // Stop submission
+        setConflict({ newTask, conflictingTask });
+        return;
       }
 
       onAddTask(newTask);
       toast.success('Task added successfully!');
-      setConflict(null); // Clear conflict state on success
+      setConflict(null);
     } catch (error) {
       toast.error('Failed to add task. Please try again.');
-      throw error;
     }
   };
 
-  const {
-    formData,
-    errors,
-    isSubmitting,
-    handleChange,
-    handleSubmit,
-    updateFormData
-  } = useForm(initialFormState, handleFormSubmit);
+  const { formData, errors, isSubmitting, handleChange, handleSubmit, updateFormData } = useForm(initialFormState, handleFormSubmit);
 
   const handleAutoReschedule = () => {
     if (!conflict) return;
-
     const nextSlot = findNextAvailableSlot(conflict.newTask, currentTasks);
 
     if (nextSlot) {
-      // Parse 24h back to 12h for form state
       const [startH, startM] = nextSlot.startTime24.split(':');
       const startHourNum = parseInt(startH, 10);
       const startPeriod = startHourNum >= 12 ? 'PM' : 'AM';
@@ -89,7 +76,6 @@ function AddTaskForm({ onAddTask, currentTasks = [] }) {
         endTime: `${endDisplayH}:${endM}`,
         endPeriod: endPeriod
       });
-
       setConflict(null);
       toast.info('Auto-rescheduled to next available slot!');
     } else {
@@ -99,204 +85,153 @@ function AddTaskForm({ onAddTask, currentTasks = [] }) {
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '28px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
         <div className="icon-badge gradient-indigo">
           <Plus size={24} color="white" />
         </div>
-        <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: 'white', margin: 0 }}>
-          Add Task
-        </h2>
+        <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white', margin: 0 }}>Add New Task</h2>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label className="form-label">
-            Task Title <span style={{ color: '#ef4444' }}>*</span>
-          </label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            placeholder="e.g., Solve 5 DSA problems"
-            maxLength={100}
-            disabled={isSubmitting}
-            className="form-input"
-          />
-          {errors.title && (
-            <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>
-              {errors.title}
-            </p>
-          )}
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-          <div className="form-group">
-            <label className="form-label">
-              Category <span style={{ color: '#ef4444' }}>*</span>
-            </label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              disabled={isSubmitting}
-              className="form-select"
-            >
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">
-              Priority <span style={{ color: '#ef4444' }}>*</span>
-            </label>
-            <select
-              name="priority"
-              value={formData.priority}
-              onChange={handleChange}
-              disabled={isSubmitting}
-              className="form-select"
-            >
-              <option value="1">1 - Low</option>
-              <option value="2">2 - Medium-Low</option>
-              <option value="3">3 - Medium</option>
-              <option value="4">4 - High</option>
-              <option value="5">5 - Urgent</option>
-            </select>
-          </div>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-          <div className="form-group">
-            <label className="form-label">
-              Start Time <span style={{ color: '#ef4444' }}>*</span>
-            </label>
+        {/* Task Title */}
+        <div className="form-group-modern">
+          <label className="form-label-modern">Task Title</label>
+          <div className="input-wrapper-modern">
+            <Type size={18} className="input-icon" />
             <input
-              type="time"
-              name="startTime"
-              value={formData.startTime}
+              type="text"
+              name="title"
+              value={formData.title}
               onChange={handleChange}
+              placeholder="What are you working on?"
+              maxLength={100}
               disabled={isSubmitting}
-              className="form-input"
+              className="form-input-modern"
             />
-            <div className="time-toggle">
-              <button
-                type="button"
-                onClick={() => updateFormData({ startPeriod: 'AM' })}
-                className={`toggle-btn ${formData.startPeriod === 'AM' ? 'active' : ''}`}
+          </div>
+          {errors.title && <p className="error-text">{errors.title}</p>}
+        </div>
+
+        {/* Category & Priority Grid */}
+        <div className="form-grid">
+          <div className="form-group-modern">
+            <label className="form-label-modern">Category</label>
+            <div className="input-wrapper-modern">
+              <Tag size={18} className="input-icon" />
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
                 disabled={isSubmitting}
+                className="form-select-modern"
               >
-                AM
-              </button>
-              <button
-                type="button"
-                onClick={() => updateFormData({ startPeriod: 'PM' })}
-                className={`toggle-btn ${formData.startPeriod === 'PM' ? 'active' : ''}`}
-                disabled={isSubmitting}
-              >
-                PM
-              </button>
+                {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+              </select>
             </div>
-            {errors.startTime && (
-              <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>
-                {errors.startTime}
-              </p>
-            )}
           </div>
 
-          <div className="form-group">
-            <label className="form-label">
-              End Time <span style={{ color: '#ef4444' }}>*</span>
-            </label>
-            <input
-              type="time"
-              name="endTime"
-              value={formData.endTime}
-              onChange={handleChange}
-              disabled={isSubmitting}
-              className="form-input"
-            />
-            <div className="time-toggle">
-              <button
-                type="button"
-                onClick={() => updateFormData({ endPeriod: 'AM' })}
-                className={`toggle-btn ${formData.endPeriod === 'AM' ? 'active' : ''}`}
+          <div className="form-group-modern">
+            <label className="form-label-modern">Priority</label>
+            <div className="input-wrapper-modern">
+              <Flag size={18} className="input-icon" />
+              <select
+                name="priority"
+                value={formData.priority}
+                onChange={handleChange}
                 disabled={isSubmitting}
+                className="form-select-modern"
               >
-                AM
-              </button>
-              <button
-                type="button"
-                onClick={() => updateFormData({ endPeriod: 'PM' })}
-                className={`toggle-btn ${formData.endPeriod === 'PM' ? 'active' : ''}`}
-                disabled={isSubmitting}
-              >
-                PM
-              </button>
+                <option value="1">Low Priority</option>
+                <option value="2">Medium-Low</option>
+                <option value="3">Medium</option>
+                <option value="4">High Priority</option>
+                <option value="5">Urgent</option>
+              </select>
             </div>
-            {errors.endTime && (
-              <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px' }}>
-                {errors.endTime}
-              </p>
-            )}
           </div>
         </div>
 
-        {errors.timeRange && (
-          <p style={{ color: '#ef4444', fontSize: '13px', marginBottom: '12px', textAlign: 'center' }}>
-            {errors.timeRange}
-          </p>
-        )}
+        {/* Time Selection Grid */}
+        <div className="form-grid">
+          <div className="form-group-modern">
+            <label className="form-label-modern">Start Time</label>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <div className="input-wrapper-modern" style={{ flex: 1 }}>
+                <Clock size={18} className="input-icon" />
+                <input
+                  type="time"
+                  name="startTime"
+                  value={formData.startTime}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                  className="form-input-modern"
+                />
+              </div>
+              <div className="am-pm-toggle">
+                <button
+                  type="button"
+                  onClick={() => updateFormData({ startPeriod: 'AM' })}
+                  className={`ampm-btn ${formData.startPeriod === 'AM' ? 'active' : ''}`}
+                >AM</button>
+                <button
+                  type="button"
+                  onClick={() => updateFormData({ startPeriod: 'PM' })}
+                  className={`ampm-btn ${formData.startPeriod === 'PM' ? 'active' : ''}`}
+                >PM</button>
+              </div>
+            </div>
+            {errors.startTime && <p className="error-text">{errors.startTime}</p>}
+          </div>
 
-        {/* Conflict Warning UI */}
+          <div className="form-group-modern">
+            <label className="form-label-modern">End Time</label>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <div className="input-wrapper-modern" style={{ flex: 1 }}>
+                <Clock size={18} className="input-icon" />
+                <input
+                  type="time"
+                  name="endTime"
+                  value={formData.endTime}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                  className="form-input-modern"
+                />
+              </div>
+              <div className="am-pm-toggle">
+                <button
+                  type="button"
+                  onClick={() => updateFormData({ endPeriod: 'AM' })}
+                  className={`ampm-btn ${formData.endPeriod === 'AM' ? 'active' : ''}`}
+                >AM</button>
+                <button
+                  type="button"
+                  onClick={() => updateFormData({ endPeriod: 'PM' })}
+                  className={`ampm-btn ${formData.endPeriod === 'PM' ? 'active' : ''}`}
+                >PM</button>
+              </div>
+            </div>
+            {errors.endTime && <p className="error-text">{errors.endTime}</p>}
+          </div>
+        </div>
+
+        {errors.timeRange && <p className="error-text-center">{errors.timeRange}</p>}
+
+        {/* Conflict UI */}
         {conflict && (
-          <div className="glass-panel" style={{
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid #ef4444',
-            padding: '16px',
-            marginBottom: '20px',
-            animation: 'fadeIn 0.3s'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#ef4444', marginBottom: '10px' }}>
-              <AlertTriangle size={20} />
-              <span style={{ fontWeight: 'bold' }}>Scheduling Conflict Detected!</span>
+          <div className="conflict-box">
+            <div className="conflict-header">
+              <AlertTriangle size={18} />
+              <span>Time Conflict Detected</span>
             </div>
-            <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '12px' }}>
-              This overlaps with '{conflict.conflictingTask.title}' ({conflict.conflictingTask.displayStart} - {conflict.conflictingTask.displayEnd}).
-            </p>
-            <button
-              type="button"
-              onClick={handleAutoReschedule}
-              style={{
-                background: 'rgba(239, 68, 68, 0.2)',
-                border: '1px solid #ef4444',
-                color: '#fff',
-                padding: '8px 16px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                width: '100%',
-                justifyContent: 'center'
-              }}
-            >
-              Auto-Reschedule <ArrowRight size={14} />
+            <p>Clashes with <strong>{conflict.conflictingTask.title}</strong></p>
+            <button type="button" onClick={handleAutoReschedule} className="btn-conflict-action">
+              Find Next Slot <ArrowRight size={14} />
             </button>
           </div>
         )}
 
-        <button
-          type="submit"
-          className="btn-primary"
-          disabled={isSubmitting}
-          style={{ opacity: isSubmitting ? 0.6 : 1 }}
-        >
-          <Plus size={20} style={{ display: 'inline', marginRight: '8px' }} />
-          {isSubmitting ? 'Adding...' : 'Add Task'}
+        <button type="submit" className="btn-modern-submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Scheduling...' : 'Create Scheduled Task'}
         </button>
       </form>
     </div>

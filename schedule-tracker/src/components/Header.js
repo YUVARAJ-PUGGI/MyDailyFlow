@@ -21,32 +21,35 @@ function Header({ currentDate, setCurrentDate, onBackToHome }) {
   return (
     <header className="glass-header">
       <div className="header-content">
-        <div className="header-title">
-          <Calendar size={32} color="#8b5cf6" />
+        <div className="header-title" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '10px', borderRadius: '12px' }}>
+            <Calendar size={28} color="#60a5fa" />
+          </div>
           <div>
-            <h1>My Schedule Tracker</h1>
-            <p>{formatDate(currentDate)}</p>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0, color: 'white' }}>Schedule Tracker</h1>
+            <p style={{ margin: 0, color: '#9ca3af', fontSize: '0.9rem' }}>{formatDate(currentDate)}</p>
           </div>
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <div className="date-picker-wrapper">
+            <input
+              type="date"
+              value={currentDate}
+              onChange={(e) => setCurrentDate(e.target.value)}
+              className="form-input"
+            />
+          </div>
+
           <button
             onClick={onBackToHome}
-            className="back-to-home-btn"
-            aria-label="Back to home page"
+            className="btn-icon"
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: 'rgba(255,255,255,0.08)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}
             title="Back to home page"
           >
             <Home size={18} />
-            <span>Home</span>
+            <span style={{ fontSize: '0.95rem', fontWeight: '500' }}>Home</span>
           </button>
-
-          <input
-            type="date"
-            value={currentDate}
-            onChange={(e) => setCurrentDate(e.target.value)}
-            className="date-input"
-            aria-label="Select date"
-          />
         </div>
       </div>
     </header>

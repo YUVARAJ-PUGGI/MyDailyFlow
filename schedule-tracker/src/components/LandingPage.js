@@ -1,262 +1,169 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { ArrowRight, Calendar, Clock, BarChart3, Zap, Shield, Sparkles } from 'lucide-react';
-
+import { ArrowRight, Calendar, Zap, Shield, BarChart3, Code, Cpu, BookOpen } from 'lucide-react';
 
 /**
- * LandingPage Component (3D Tech Upgrade)
+ * LandingPage Component
+ * A modern, high-performance landing page for MyDailyFlow.
  */
 function LandingPage({ onGetStarted }) {
   const tiltRef = useRef(null);
 
-  // Simple 3D Tilt Effect on Mouse Move
   const handleMouseMove = (e) => {
     if (!tiltRef.current) return;
     const card = tiltRef.current;
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -5;
+    const rotateY = ((x - centerX) / centerX) * 5;
 
-    const rotateX = ((y - centerY) / centerY) * -10; // Max 10deg rotation
-    const rotateY = ((x - centerX) / centerX) * 10;
-
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
   };
 
   const handleMouseLeave = () => {
     if (!tiltRef.current) return;
-    tiltRef.current.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+    tiltRef.current.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
   };
 
   return (
     <div className="landing-page">
-      {/* 3D Animated Background */}
-      <div className="cyber-grid-bg"></div>
-      <div className="floating-orb orb-1"></div>
-      <div className="floating-orb orb-2"></div>
+      <div className="background-gradient"></div>
 
-      {/* Navigation */}
-      <nav className="glass-header">
-        <div className="header-content">
-          <div className="header-title">
-            <Calendar color="#00f0ff" size={32} />
-            <h1 className="gradient-text" style={{ fontSize: '24px', margin: 0 }}>
-              MyDaily<span style={{ color: 'white' }}>Flow</span>
-            </h1>
+      {/* Navbar */}
+      <nav className="navbar">
+        <div className="nav-container">
+          <div className="nav-logo">
+            <Calendar className="logo-icon" size={28} />
+            <span className="logo-text">MyDaily<span className="text-highlight">Flow</span></span>
           </div>
-          <button onClick={onGetStarted} className="btn-primary" style={{ width: 'auto', padding: '10px 24px', marginTop: 0 }}>
+          <button onClick={onGetStarted} className="btn-primary-small">
             Get Started
           </button>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="hero-section" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', position: 'relative', zIndex: 1 }}>
-        <div style={{ maxWidth: '800px', padding: '0 20px' }}>
-          <div
-            className="feature-chip fade-in"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '8px 16px',
-              background: 'rgba(0, 240, 255, 0.1)',
-              border: '1px solid #00f0ff',
-              borderRadius: '99px',
-              color: '#00f0ff',
-              marginBottom: '24px',
-              fontSize: '14px',
-              fontWeight: '600',
-              boxShadow: '0 0 15px rgba(0, 240, 255, 0.3)'
-            }}
-          >
-            <Sparkles size={16} />
-            <span>Next Gen Task Management</span>
+      <header className="hero">
+        <div className="hero-content">
+          <div className="hero-badge">
+            <span className="badge-text">Built for Engineering Students</span>
           </div>
-
-          <h1 className="gradient-text fade-in" style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)', fontWeight: '800', lineHeight: 1.1, marginBottom: '24px' }}>
-            Master Your Time in <br />
-            <span style={{ WebkitTextStroke: '1px rgba(255,255,255,0.3)', color: 'transparent' }}>3D Space</span>
+          <h1 className="hero-title">
+            Master Your Time, <br />
+            <span className="text-gradient">Ace Your Goals.</span>
           </h1>
-
-          <p className="fade-in" style={{ fontSize: '1.25rem', color: 'var(--text-muted)', marginBottom: '40px', maxWidth: '600px', margin: '0 auto 40px' }}>
-            Experience the future of productivity with our immersive, high-performance schedule tracker. Built for the modern web.
+          <p className="hero-subtitle">
+            The intelligent schedule tracker designed to help you balance complex coding projects,
+            DSA practice, and academic life with ease.
           </p>
 
-          <div
-            ref={tiltRef}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            className="glass-panel tilt-card fade-in"
-            style={{ display: 'inline-block', padding: '40px', cursor: 'default' }}
-          >
-            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '30px' }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '32px', fontWeight: 'bold', color: 'white' }}>10x</div>
-                <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Focus</div>
-              </div>
-              <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '32px', fontWeight: 'bold', color: 'white' }}>100%</div>
-                <div style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Control</div>
-              </div>
-            </div>
-
-            <button
-              onClick={onGetStarted}
-              className="btn-primary"
-              style={{ fontSize: '18px', padding: '16px 40px', display: 'flex', alignItems: 'center', gap: '12px', margin: '0 0' }}
-            >
-              Get Started Now <ArrowRight size={20} />
+          <div className="hero-actions">
+            <button onClick={onGetStarted} className="btn-primary-large">
+              Start Scheduling Now <ArrowRight size={20} />
+            </button>
+            <button className="btn-secondary-large">
+              Learn More
             </button>
           </div>
         </div>
-      </section>
 
-      {/* Features Grid */}
-      <section style={{ padding: '80px 20px', position: 'relative', zIndex: 1 }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <h2 className="gradient-text" style={{ fontSize: '36px', textAlign: 'center', marginBottom: '60px', fontWeight: '800' }}>
-            Why Choose MyDailyFlow?
-          </h2>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-            <div className="glass-panel tilt-card">
-              <div style={{ background: 'rgba(112, 0, 255, 0.2)', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
-                <Zap size={24} color="#7000ff" />
-              </div>
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white', marginBottom: '12px' }}>Lightning Fast</h3>
-              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                Optimized for speed with instant interactions and zero lag. Feel the power of modern web tech.
-              </p>
+        <div className="hero-visual">
+          <div
+            className="hero-card glass-panel"
+            ref={tiltRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div className="card-header">
+              <div className="card-dot red"></div>
+              <div className="card-dot yellow"></div>
+              <div className="card-dot green"></div>
             </div>
-
-            <div className="glass-panel tilt-card" style={{ transform: 'translateY(20px)' }}>
-              <div style={{ background: 'rgba(0, 240, 255, 0.2)', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
-                <Shield size={24} color="#00f0ff" />
+            <div className="card-body">
+              <div className="mock-schedule-item active">
+                <Code size={16} /> <span>DSA Practice (Graphs)</span> <span className="time">2h</span>
               </div>
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white', marginBottom: '12px' }}>Secure & Private</h3>
-              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                Your data stays local. No cloud leaks, just pure localized productivity storage.
-              </p>
-            </div>
-
-            <div className="glass-panel tilt-card">
-              <div style={{ background: 'rgba(255, 0, 85, 0.2)', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
-                <BarChart3 size={24} color="#ff0055" />
+              <div className="mock-schedule-item">
+                <Cpu size={16} /> <span>System Design Study</span> <span className="time">1.5h</span>
               </div>
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white', marginBottom: '12px' }}>Visual Analytics</h3>
-              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                Track your progress with beautiful, real-time data visualization and insights.
-              </p>
+              <div className="mock-schedule-item">
+                <BookOpen size={16} /> <span>Final Year Project</span> <span className="time">3h</span>
+              </div>
             </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Why MyDailyFlow? */}
+      <section className="features-section">
+        <div className="section-header">
+          <h2>Intelligent Scheduling</h2>
+          <p>Why engineering students choose MyDailyFlow</p>
+        </div>
+
+        <div className="features-grid">
+          <div className="feature-card">
+            <div className="icon-box blue"><Zap size={24} /></div>
+            <h3>Lightning Fast flow</h3>
+            <p>Input tasks in seconds. Drag, drop, and organize your day without breaking your coding flow.</p>
+          </div>
+          <div className="feature-card">
+            <div className="icon-box purple"><BarChart3 size={24} /></div>
+            <h3>Visual Analytics</h3>
+            <p>Track your study hours, coding streaks, and project progress with beautiful, real-time charts.</p>
+          </div>
+          <div className="feature-card">
+            <div className="icon-box pink"><Shield size={24} /></div>
+            <h3>Distraction Free</h3>
+            <p>A minimal, dark-mode interface that helps you focus on what matters: shipping code and passing exams.</p>
+          </div>
+          <div className="feature-card">
+            <div className="icon-box green"><Code size={24} /></div>
+            <h3>Smart Goals</h3>
+            <p>Set daily coding targets and sync them with your GitHub activity for maximum accountability.</p>
           </div>
         </div>
       </section>
 
-      {/* Benefits for Engineering Students */}
-      <section style={{ padding: '80px 20px', position: 'relative', zIndex: 1 }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <h2 className="gradient-text" style={{ fontSize: '36px', textAlign: 'center', marginBottom: '60px', fontWeight: '800' }}>
-            Perfect for Engineering Students
-          </h2>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-            <div className="glass-panel tilt-card">
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#00f0ff', marginBottom: '12px' }}>DSA & Coding</h3>
-              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                Dedicated categories for Data Structures and Algorithms practice. Track your coding streaks.
-              </p>
+      {/* Visual Showcase Section */}
+      <section className="visual-section">
+        <div className="visual-container">
+          <div className="visual-card-left glass-panel">
+            <div className="card-header">
+              <h3>Weekly Progress</h3>
             </div>
-
-            <div className="glass-panel tilt-card">
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#7000ff', marginBottom: '12px' }}>Project Management</h3>
-              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                Break down complex final year projects into manageable sprints and tasks.
-              </p>
+            <div className="mock-chart">
+              <div className="bar" style={{ height: '40%' }}></div>
+              <div className="bar" style={{ height: '70%' }}></div>
+              <div className="bar" style={{ height: '50%' }}></div>
+              <div className="bar active" style={{ height: '90%' }}></div>
+              <div className="bar" style={{ height: '60%' }}></div>
             </div>
-
-            <div className="glass-panel tilt-card">
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#ff0055', marginBottom: '12px' }}>Exam Prep</h3>
-              <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                Optimize your study schedule with time-blocking for optimal retention.
-              </p>
-            </div>
+            <div className="card-footer-text">You are crushing it! 🔥</div>
           </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section style={{ padding: '80px 20px', position: 'relative', zIndex: 1, paddingBottom: '120px' }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
-          <h2 className="gradient-text" style={{ fontSize: '36px', marginBottom: '60px', fontWeight: '800' }}>
-            How It Works
-          </h2>
-
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '40px', textAlign: 'left' }}>
-            <div className="glass-panel tilt-card" style={{ flex: '1 1 300px', position: 'relative' }}>
-              <div style={{ fontSize: '80px', fontWeight: '900', color: 'rgba(255,255,255,0.05)', position: 'absolute', top: '10px', right: '20px' }}>1</div>
-              <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: 'white', marginBottom: '16px' }}>Plan</h3>
-              <p style={{ color: 'var(--text-muted)' }}>Add your tasks for the day. Categorize them into DSA, Dev, or Study.</p>
-            </div>
-
-            <div className="glass-panel tilt-card" style={{ flex: '1 1 300px', position: 'relative' }}>
-              <div style={{ fontSize: '80px', fontWeight: '900', color: 'rgba(255,255,255,0.05)', position: 'absolute', top: '10px', right: '20px' }}>2</div>
-              <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: 'white', marginBottom: '16px' }}>Focus</h3>
-              <p style={{ color: 'var(--text-muted)' }}>Execute your tasks. The UI stays out of your way so you can code.</p>
-            </div>
-
-            <div className="glass-panel tilt-card" style={{ flex: '1 1 300px', position: 'relative' }}>
-              <div style={{ fontSize: '80px', fontWeight: '900', color: 'rgba(255,255,255,0.05)', position: 'absolute', top: '10px', right: '20px' }}>3</div>
-              <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: 'white', marginBottom: '16px' }}>Track</h3>
-              <p style={{ color: 'var(--text-muted)' }}>Mark tasks complete and visualize your productivity in the stats dashboard.</p>
-            </div>
+          <div className="visual-text">
+            <h2>Visualize Your Growth</h2>
+            <p>See your study habits improve over time with detailed analytics and insights.</p>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer style={{
-        borderTop: '1px solid rgba(255,255,255,0.1)',
-        padding: '60px 20px',
-        position: 'relative',
-        zIndex: 1,
-        background: 'rgba(0,0,0,0.4)',
-        backdropFilter: 'blur(10px)'
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ marginBottom: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '12px' }}>
-              <Calendar color="#00f0ff" size={28} />
-              <h2 className="gradient-text" style={{ fontSize: '24px', margin: 0, fontWeight: 'bold' }}>
-                MyDaily<span style={{ color: 'white' }}>Flow</span>
-              </h2>
-            </div>
-            <p style={{ color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
-              Empowering engineering students to master their time, achieve their goals, and maintain a balanced lifestyle through intelligent scheduling.
-            </p>
+      <footer className="footer">
+        <div className="footer-content">
+          <div className="footer-logo">
+            <Calendar size={24} />
+            <span>MyDailyFlow</span>
           </div>
-
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '24px',
-            margin: '32px 0',
-            color: 'white',
-            fontSize: '14px',
-            flexWrap: 'wrap'
-          }}>
-            <span style={{ color: 'var(--text-muted)', cursor: 'pointer' }}>Cookie Policy</span>
-            <span style={{ color: 'var(--text-muted)' }}>•</span>
-            <span style={{ color: 'var(--text-muted)' }}>Built with ❤️ for students.</span>
+          <div className="footer-links">
+            <span>Privacy</span>
+            <span>Terms</span>
+            <span>Contact</span>
           </div>
-
-          <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px' }}>
-            © 2025 MyDailyFlow. All rights reserved.
-          </div>
+          <p className="copyright">© 2025 MyDailyFlow. Built with ❤️ for students.</p>
         </div>
       </footer>
     </div>

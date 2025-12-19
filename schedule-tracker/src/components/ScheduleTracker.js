@@ -5,16 +5,19 @@ import TaskList from './TaskList';
 import KanbanBoard from './KanbanBoard';
 import AnalyticsDashboard from './AnalyticsDashboard';
 import TimeStats from './TimeStats';
+import PomodoroTimer from './PomodoroTimer';
+import ExamCountdown from './ExamCountdown';
+import StreakTracker from './StreakTracker';
 import useTasks from '../hooks/useTasks';
-import { LayoutList, Trello, BarChart2 } from 'lucide-react';
+import { LayoutList, Trello, BarChart2, Plus } from 'lucide-react';
 
 /**
- * ScheduleTracker Component (3D Tech Upgrade)
- * The main interface for the application after "Get Started"
+ * ScheduleTracker Component (Revamp)
+ * Smart 2-column layout for engineering productivity.
  */
 function ScheduleTracker({ onBackToHome }) {
     const {
-        tasks, // Access all tasks for Analytics
+        tasks,
         loading,
         error,
         addTask,
@@ -28,6 +31,7 @@ function ScheduleTracker({ onBackToHome }) {
         new Date().toISOString().split('T')[0]
     );
     const [viewMode, setViewMode] = useState('list'); // 'list', 'kanban', 'analytics'
+    const [showAddTask, setShowAddTask] = useState(false);
 
     // Get tasks for current date (for List/Kanban)
     const todayTasks = getTasksByDate(currentDate);
@@ -39,36 +43,14 @@ function ScheduleTracker({ onBackToHome }) {
             date: currentDate,
         };
         addTask(task);
+        setShowAddTask(false);
     };
 
-    if (loading) {
-        return (
-            <div className="loading-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>
-                <div className="loading-content">
-                    <div className="spinner" style={{ fontSize: '48px' }}>⏳</div>
-                    <p>Loading your schedule...</p>
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="error-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>
-                <div className="error-card glass-panel">
-                    <div className="error-icon">⚠️</div>
-                    <p className="error-message">{error}</p>
-                </div>
-            </div>
-        );
-    }
+    if (loading) return <div className="loading-screen">Loading...</div>;
 
     return (
         <div className="schedule-tracker fade-in">
-            {/* 3D Background Elements */}
             <div className="cyber-grid-bg"></div>
-            <div className="floating-orb orb-1"></div>
-            <div className="floating-orb orb-2"></div>
 
             <Header
                 currentDate={currentDate}
@@ -78,88 +60,65 @@ function ScheduleTracker({ onBackToHome }) {
                 onBackToHome={onBackToHome}
             />
 
-            <div className="main-content">
-                <div className="sidebar">
-                    <div className="glass-panel tilt-card">
-                        <AddTaskForm onAddTask={handleAddTask} currentTasks={todayTasks} />
-                    </div>
-                    <div className="glass-panel tilt-card">
-                        <TimeStats tasks={todayTasks} />
-                    </div>
-                </div>
+            <div className="tracker-container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px', display: 'grid', gridTemplateColumns: '320px 1fr', gap: '32px' }}>
 
-                <div className="task-section">
-                    <div className="glass-panel" style={{ minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
-                        {/* View Toggle */}
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px', gap: '8px' }}>
-                            <button
-                                onClick={() => setViewMode('list')}
-                                className={`btn-icon ${viewMode === 'list' ? 'active' : ''}`}
-                                style={{
-                                    background: viewMode === 'list' ? 'rgba(0, 240, 255, 0.2)' : 'rgba(255,255,255,0.05)',
-                                    border: viewMode === 'list' ? '1px solid #00f0ff' : '1px solid transparent',
-                                    padding: '8px',
-                                    borderRadius: '8px',
-                                    color: 'white',
-                                    cursor: 'pointer'
-                                }}
-                                title="List View"
-                            >
-                                <LayoutList size={20} />
-                            </button>
-                            <button
-                                onClick={() => setViewMode('kanban')}
-                                className={`btn-icon ${viewMode === 'kanban' ? 'active' : ''}`}
-                                style={{
-                                    background: viewMode === 'kanban' ? 'rgba(0, 240, 255, 0.2)' : 'rgba(255,255,255,0.05)',
-                                    border: viewMode === 'kanban' ? '1px solid #00f0ff' : '1px solid transparent',
-                                    padding: '8px',
-                                    borderRadius: '8px',
-                                    color: 'white',
-                                    cursor: 'pointer'
-                                }}
-                                title="Kanban Board"
-                            >
-                                <Trello size={20} />
-                            </button>
-                            <button
-                                onClick={() => setViewMode('analytics')}
-                                className={`btn-icon ${viewMode === 'analytics' ? 'active' : ''}`}
-                                style={{
-                                    background: viewMode === 'analytics' ? 'rgba(0, 240, 255, 0.2)' : 'rgba(255,255,255,0.05)',
-                                    border: viewMode === 'analytics' ? '1px solid #00f0ff' : '1px solid transparent',
-                                    padding: '8px',
-                                    borderRadius: '8px',
-                                    color: 'white',
-                                    cursor: 'pointer'
-                                }}
-                                title="Analytics Dashboard"
-                            >
-                                <BarChart2 size={20} />
-                            </button>
+                {/* UPGRADED SIDEBAR */}
+                <aside className="tracker-sidebar">
+                    <StreakTracker />
+                    <PomodoroTimer />
+                    <ExamCountdown />
+                    <TimeStats tasks={todayTasks} />
+                </aside>
+
+                {/* MAIN CONTENT AREA */}
+                <main className="tracker-main">
+                    {/* Toolbar */}
+                    <div className="glass-panel" style={{ marginBottom: '24px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', gap: '12px' }}>
+                            <button onClick={() => setViewMode('list')} className={`btn-icon ${viewMode === 'list' ? 'active' : ''}`}><LayoutList size={20} /></button>
+                            <button onClick={() => setViewMode('kanban')} className={`btn-icon ${viewMode === 'kanban' ? 'active' : ''}`}><Trello size={20} /></button>
+                            <button onClick={() => setViewMode('analytics')} className={`btn-icon ${viewMode === 'analytics' ? 'active' : ''}`}><BarChart2 size={20} /></button>
                         </div>
+                        <button onClick={() => setShowAddTask(!showAddTask)} className="btn-primary-small" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <Plus size={16} /> Add Task
+                        </button>
+                    </div>
 
+                    {/* Add Task Form (Collapsible) */}
+                    {showAddTask && (
+                        <div className="glass-panel" style={{ marginBottom: '24px', animation: 'slideInUp 0.3s ease' }}>
+                            <AddTaskForm onAddTask={handleAddTask} />
+                        </div>
+                    )}
+
+                    {/* Views */}
+                    <div className="view-container" style={{ minHeight: '600px' }}>
                         {viewMode === 'list' && (
-                            <TaskList
-                                tasks={todayTasks}
-                                onToggleComplete={toggleTaskCompletion}
-                                onDeleteTask={deleteTask}
-                            />
+                            <div className="glass-panel" style={{ padding: '24px' }}>
+                                <h2 style={{ fontSize: '20px', marginBottom: '20px', color: 'white' }}>Tasks for Today</h2>
+                                <TaskList
+                                    tasks={todayTasks}
+                                    onToggleComplete={toggleTaskCompletion}
+                                    onDeleteTask={deleteTask}
+                                />
+                            </div>
                         )}
 
                         {viewMode === 'kanban' && (
-                            <KanbanBoard
-                                tasks={todayTasks}
-                                onUpdateTask={updateTask}
-                                onDeleteTask={deleteTask}
-                            />
+                            <div style={{ overflowX: 'auto', paddingBottom: '20px' }}>
+                                <KanbanBoard
+                                    tasks={todayTasks}
+                                    onUpdateTask={updateTask}
+                                    onDeleteTask={deleteTask}
+                                />
+                            </div>
                         )}
 
                         {viewMode === 'analytics' && (
                             <AnalyticsDashboard tasks={tasks} />
                         )}
                     </div>
-                </div>
+                </main>
             </div>
         </div>
     );

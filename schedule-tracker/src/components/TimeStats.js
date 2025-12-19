@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { BarChart3 } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { getCategoryStyle } from '../constants/categories';
 
 /**
  * TimeStats Component
- * Displays time spent on each category
+ * Displays time spent on each category using a Pie Chart
  */
 function TimeStats({ tasks }) {
   const calculateTimeSpent = () => {
@@ -24,69 +25,77 @@ function TimeStats({ tasks }) {
         stats[task.category] = (stats[task.category] || 0) + hours;
       }
     });
-    return stats;
+
+    // Transform to array for Recharts
+    return Object.entries(stats).map(([name, value]) => ({
+      name,
+      value: parseFloat(value.toFixed(1)),
+      color: getCategoryStyle(name).color
+    })).filter(item => item.value > 0);
   };
 
-  const timeStats = calculateTimeSpent();
-  const totalHours = Object.values(timeStats).reduce((a, b) => a + b, 0);
+  const chartData = calculateTimeSpent();
+  const totalHours = chartData.reduce((acc, item) => acc + item.value, 0);
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div style={{ background: 'rgba(0,0,0,0.8)', padding: '8px', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '4px', color: 'white' }}>
+          <p>{`${payload[0].name} : ${payload[0].value}h`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
-    <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-        <div className="icon-badge gradient-blue">
-          <BarChart3 size={24} color="white" />
+    <div className="widget-card glass-panel" style={{ padding: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <BarChart3 size={20} color="var(--primary)" />
+          <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: 'white', margin: 0 }}>
+            Time Distribution
+          </h3>
         </div>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: 'white', margin: 0 }}>
-          Time Spent Today
-        </h3>
+        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{totalHours.toFixed(1)}h Total</span>
       </div>
 
-      {Object.keys(timeStats).length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-state-icon">📊</div>
-          <p className="empty-state-text">
-            Complete tasks to see time statistics
-          </p>
+      {chartData.length === 0 ? (
+        <div className="empty-state" style={{ padding: '20px', textAlign: 'center', opacity: 0.5 }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>No completed tasks yet.</p>
         </div>
       ) : (
-        <>
-          <div className="stat-box">
-            <span className="stat-label">
-              Total Time Completed
-            </span>
-            <span className="stat-value">
-              {totalHours.toFixed(1)}h
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {Object.entries(timeStats).map(([category, hours]) => {
-              const catStyle = getCategoryStyle(category);
-              return (
-                <div
-                  key={category}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '12px 16px',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: '12px',
-                  }}
-                >
-                  <span style={{ color: catStyle.color, fontWeight: '600', fontSize: '14px' }}>
-                    {category}
-                  </span>
-                  <span style={{ color: 'white', fontWeight: '700', fontSize: '16px' }}>
-                    {hours.toFixed(1)}h
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </>
+        <div style={{ height: '200px', width: '100%' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={chartData}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={80}
+                paddingAngle={5}
+                dataKey="value"
+                stroke="none"
+              >
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip content={<CustomTooltip />} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
       )}
+
+      <div style={{ marginTop: '16px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+        {chartData.map((entry) => (
+          <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-muted)' }}>
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: entry.color }}></div>
+            <span>{entry.name}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
