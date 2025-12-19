@@ -8,6 +8,9 @@ import TimeStats from './TimeStats';
 import PomodoroTimer from './PomodoroTimer';
 import ExamCountdown from './ExamCountdown';
 import StreakTracker from './StreakTracker';
+import LevelProgress from './LevelProgress';
+import SmartToolbar from './SmartToolbar';
+import { useGamification } from '../context/GamificationContext';
 import useTasks from '../hooks/useTasks';
 import { LayoutList, Trello, BarChart2, Plus } from 'lucide-react';
 
@@ -24,8 +27,12 @@ function ScheduleTracker({ onBackToHome }) {
         updateTask,
         deleteTask,
         toggleTaskCompletion,
-        getTasksByDate
+        getTasksByDate,
+        autoRescheduleOverdue,
+        checkConflicts
     } = useTasks();
+
+    const { addXP } = useGamification();
 
     const [currentDate, setCurrentDate] = useState(
         new Date().toISOString().split('T')[0]
@@ -36,6 +43,7 @@ function ScheduleTracker({ onBackToHome }) {
     // Get tasks for current date (for List/Kanban)
     const todayTasks = getTasksByDate(currentDate);
     const completedCount = todayTasks.filter(t => t.completed).length;
+    const conflicts = checkConflicts(currentDate);
 
     const handleAddTask = (newTaskData) => {
         const task = {
@@ -44,6 +52,16 @@ function ScheduleTracker({ onBackToHome }) {
         };
         addTask(task);
         setShowAddTask(false);
+    };
+
+    const handleToggleCompleteWrapper = (taskId) => {
+        // Find task to check if we are completing or un-completing
+        const task = tasks.find(t => t.id === taskId);
+        if (task && !task.completed) {
+            // User is completing the task -> Award XP
+            addXP(50);
+        }
+        toggleTaskCompletion(taskId);
     };
 
     if (loading) return <div className="loading-screen">Loading...</div>;
@@ -64,6 +82,7 @@ function ScheduleTracker({ onBackToHome }) {
 
                 {/* UPGRADED SIDEBAR */}
                 <aside className="tracker-sidebar">
+                    <LevelProgress />
                     <StreakTracker />
                     <PomodoroTimer />
                     <ExamCountdown />
@@ -72,6 +91,13 @@ function ScheduleTracker({ onBackToHome }) {
 
                 {/* MAIN CONTENT AREA */}
                 <main className="tracker-main">
+
+                    {/* NEW: Smart Toolbar for "Magic" actions */}
+                    <SmartToolbar
+                        onAutoReschedule={autoRescheduleOverdue}
+                        conflictCount={conflicts.length}
+                    />
+
                     {/* Toolbar */}
                     <div className="glass-panel" style={{ marginBottom: '24px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div style={{ display: 'flex', gap: '12px' }}>
@@ -86,7 +112,7 @@ function ScheduleTracker({ onBackToHome }) {
 
                     {/* Add Task Form (Collapsible) */}
                     {showAddTask && (
-                        <div className="glass-panel" style={{ marginBottom: '24px', animation: 'slideInUp 0.3s ease' }}>
+                        <div className="glass-panel" style={{ marginBottom: '24px', padding: '24px', animation: 'slideInUp 0.3s ease' }}>
                             <AddTaskForm onAddTask={handleAddTask} />
                         </div>
                     )}
@@ -98,7 +124,17 @@ function ScheduleTracker({ onBackToHome }) {
                                 <h2 style={{ fontSize: '20px', marginBottom: '20px', color: 'white' }}>Tasks for Today</h2>
                                 <TaskList
                                     tasks={todayTasks}
-                                    onToggleComplete={toggleTaskCompletion}
+                                    onToggleComplete={handleToggleCompleteWrapper}
+                                    onDeleteTask={deleteTask}
+                                />
+                            </div>
+                        )}
+
+                        {viewMode === 'kanban' && (
+                            <div style={{ overflowX: 'auto', paddingBottom: '20px' }}>
+                                <KanbanBoard
+                                    tasks={todayTasks}
+                                    onUpdateTask={updateTask}
                                     onDeleteTask={deleteTask}
                                 />
                             </div>

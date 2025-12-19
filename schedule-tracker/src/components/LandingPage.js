@@ -1,6 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react'; // Refresh
+
 import PropTypes from 'prop-types';
-import { ArrowRight, Calendar, Zap, Shield, BarChart3, Code, Cpu, BookOpen } from 'lucide-react';
+import { ArrowRight, Zap, Shield, BarChart3, Code, Cpu, BookOpen } from 'lucide-react';
+import Logo from './Logo';
 
 /**
  * LandingPage Component
@@ -36,8 +38,7 @@ function LandingPage({ onGetStarted }) {
       <nav className="navbar">
         <div className="nav-container">
           <div className="nav-logo">
-            <Calendar className="logo-icon" size={28} />
-            <span className="logo-text">MyDaily<span className="text-highlight">Flow</span></span>
+            <Logo size="medium" />
           </div>
           <button onClick={onGetStarted} className="btn-primary-small">
             Get Started
@@ -155,15 +156,15 @@ function LandingPage({ onGetStarted }) {
       <footer className="footer">
         <div className="footer-content">
           <div className="footer-logo">
-            <Calendar size={24} />
-            <span>MyDailyFlow</span>
+            <Logo size="medium" />
           </div>
-          <div className="footer-links">
-            <span>Privacy</span>
-            <span>Terms</span>
-            <span>Contact</span>
+          <p style={{ maxWidth: '500px', textAlign: 'center', color: '#9ca3af', lineHeight: '1.6', margin: '0' }}>
+            Empowering engineering students to master their time, achieve their goals, and maintain a balanced lifestyle through intelligent scheduling.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+            <p className="copyright">© 2025 MyDailyFlow. Built with ❤️ for students.</p>
+            <p className="copyright" style={{ color: '#6366f1', fontWeight: '500' }}>Designed by Yuvaraj Puggi</p>
           </div>
-          <p className="copyright">© 2025 MyDailyFlow. Built with ❤️ for students.</p>
         </div>
       </footer>
     </div>

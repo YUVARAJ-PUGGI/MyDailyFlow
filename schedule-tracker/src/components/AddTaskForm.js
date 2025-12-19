@@ -89,7 +89,7 @@ function AddTaskForm({ onAddTask, currentTasks = [] }) {
         <div className="icon-badge gradient-indigo">
           <Plus size={24} color="white" />
         </div>
-        <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white', margin: 0 }}>Add New Task</h2>
+        <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white', margin: 0 }}>Add Task</h2>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -103,7 +103,7 @@ function AddTaskForm({ onAddTask, currentTasks = [] }) {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              placeholder="What are you working on?"
+              placeholder="e.g., Solve 5 DSA problems"
               maxLength={100}
               disabled={isSubmitting}
               className="form-input-modern"
@@ -231,7 +231,7 @@ function AddTaskForm({ onAddTask, currentTasks = [] }) {
         )}
 
         <button type="submit" className="btn-modern-submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Scheduling...' : 'Create Scheduled Task'}
+          {isSubmitting ? 'Scheduling...' : <><Plus size={20} /> Add Task</>}
         </button>
       </form>
     </div>

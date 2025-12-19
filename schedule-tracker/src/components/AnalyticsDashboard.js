@@ -6,6 +6,8 @@ import {
 } from 'recharts';
 import { Clock, PieChart as PieIcon, Activity } from 'lucide-react';
 import { getMinutesFromTime } from '../utils/schedulingUtils';
+import ActivityHeatmap from './ActivityHeatmap';
+import DataExport from './DataExport';
 
 /**
  * AnalyticsDashboard Component
@@ -62,11 +64,18 @@ function AnalyticsDashboard({ tasks }) {
     return (
         <div className="analytics-dashboard fade-in" style={{ paddingBottom: '40px' }}>
 
-            {/* Top Row: Pie and Area Charts */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '20px', marginBottom: '20px' }}>
 
+                {/* 0. Activity Heatmap & Data Control */}
+                <ActivityHeatmap tasks={tasks} />
+
+                {/* Data Export Widget - Full Width on Mobile, fit in grid on desktop */}
+                <div style={{ gridColumn: '1 / -1' }}>
+                    <DataExport tasks={tasks} />
+                </div>
+
                 {/* Task Distribution */}
-                <div className="glass-panel tilt-card">
+                <div className="glass-panel tilt-card" style={{ padding: '24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                         <PieIcon size={20} color="#00f0ff" />
                         <h3 style={{ margin: 0, color: 'white' }}>Task Distribution</h3>
@@ -99,7 +108,7 @@ function AnalyticsDashboard({ tasks }) {
                 </div>
 
                 {/* Productivity Flow */}
-                <div className="glass-panel tilt-card">
+                <div className="glass-panel tilt-card" style={{ padding: '24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                         <Activity size={20} color="#7000ff" />
                         <h3 style={{ margin: 0, color: 'white' }}>Productivity Flow (7 Days)</h3>
@@ -128,7 +137,7 @@ function AnalyticsDashboard({ tasks }) {
             </div>
 
             {/* Bottom Row: Daily Timeline */}
-            <div className="glass-panel tilt-card">
+            <div className="glass-panel tilt-card" style={{ padding: '24px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                     <Clock size={20} color="#ff0055" />
                     <h3 style={{ margin: 0, color: 'white' }}>Daily Timeline (Today)</h3>

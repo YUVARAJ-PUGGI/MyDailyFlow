@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Calendar, Home } from 'lucide-react';
+import { Home } from 'lucide-react';
+import Logo from './Logo';
 
 /**
  * Header Component
@@ -22,13 +23,8 @@ function Header({ currentDate, setCurrentDate, onBackToHome }) {
     <header className="glass-header">
       <div className="header-content">
         <div className="header-title" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '10px', borderRadius: '12px' }}>
-            <Calendar size={28} color="#60a5fa" />
-          </div>
-          <div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0, color: 'white' }}>Schedule Tracker</h1>
-            <p style={{ margin: 0, color: '#9ca3af', fontSize: '0.9rem' }}>{formatDate(currentDate)}</p>
-          </div>
+          <Logo size="medium" />
+          <p style={{ margin: 0, color: '#9ca3af', fontSize: '0.9rem', marginLeft: '12px', borderLeft: '1px solid #333', paddingLeft: '12px' }}>{formatDate(currentDate)}</p>
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>

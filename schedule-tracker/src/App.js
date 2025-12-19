@@ -6,6 +6,8 @@ import LandingPage from './components/LandingPage';
 import ScheduleTracker from './components/ScheduleTracker';
 import './App.css';
 
+import { GamificationProvider } from './context/GamificationContext';
+
 /**
  * Main App Component
  * Manages the high-level transition from Landing Page to Schedule Tracker
@@ -23,26 +25,28 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <div className="app">
-        {showLanding ? (
-          <LandingPage onGetStarted={handleGetStarted} />
-        ) : (
-          <ScheduleTracker onBackToHome={handleBackToHome} />
-        )}
-      </div>
+      <GamificationProvider>
+        <div className="app">
+          {showLanding ? (
+            <LandingPage onGetStarted={handleGetStarted} />
+          ) : (
+            <ScheduleTracker onBackToHome={handleBackToHome} />
+          )}
+        </div>
 
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
+      </GamificationProvider>
     </ErrorBoundary>
   );
 }

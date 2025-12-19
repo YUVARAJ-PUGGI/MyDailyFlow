@@ -41,7 +41,7 @@ function KanbanBoard({ tasks, onUpdateTask, onDeleteTask }) {
             paddingBottom: '20px'
         }}>
             {columns.map(col => (
-                <div key={col.id} className="glass-panel" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <div key={col.id} className="glass-panel" style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '24px' }}>
                     {/* Column Header */}
                     <div style={{
                         display: 'flex',
