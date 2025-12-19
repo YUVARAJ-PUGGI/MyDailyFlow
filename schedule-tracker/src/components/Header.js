@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Calendar } from 'lucide-react';
+import { Calendar, Home } from 'lucide-react';
 
 /**
  * Header Component
  * Displays app title, date picker, and daily statistics
  */
-function Header({ currentDate, setCurrentDate, totalTasks, completedTasks }) {
+function Header({ currentDate, setCurrentDate, totalTasks, completedTasks, onBackToHome }) {
   const progress = totalTasks > 0 
     ? Math.round((completedTasks / totalTasks) * 100) 
     : 0;
@@ -38,13 +38,25 @@ function Header({ currentDate, setCurrentDate, totalTasks, completedTasks }) {
           </div>
         </div>
         
-        <input 
-          type="date" 
-          value={currentDate}
-          onChange={(e) => setCurrentDate(e.target.value)}
-          className="date-input"
-          aria-label="Select date"
-        />
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <button 
+            onClick={onBackToHome}
+            className="back-to-home-btn"
+            aria-label="Back to home page"
+            title="Back to home page"
+          >
+            <Home size={18} />
+            <span>Home</span>
+          </button>
+          
+          <input 
+            type="date" 
+            value={currentDate}
+            onChange={(e) => setCurrentDate(e.target.value)}
+            className="date-input"
+            aria-label="Select date"
+          />
+        </div>
       </div>
       
       <div className="stats-bar">
@@ -59,7 +71,8 @@ function Header({ currentDate, setCurrentDate, totalTasks, completedTasks }) {
         </div>
         
         <div className="stat-box stat-progress">
-          <span className="stat-label">Progress</span>
+          <span className="stat-label">Progre,
+  onBackToHome: PropTypes.func.isRequiredss</span>
           <span className="stat-value">{progress}%</span>
         </div>
       </div>
