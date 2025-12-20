@@ -78,7 +78,7 @@ function ScheduleTracker({ onBackToHome }) {
                 onBackToHome={onBackToHome}
             />
 
-            <div className="tracker-container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px', display: 'grid', gridTemplateColumns: '320px 1fr', gap: '32px' }}>
+            <div className="tracker-container">
 
                 {/* UPGRADED SIDEBAR */}
                 <aside className="tracker-sidebar">

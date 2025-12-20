@@ -695,14 +695,23 @@ body {
 
 /* Tracker Layout */
 .tracker-container {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column-reverse;
+  /* Tasks (Main) on top, Sidebar below on mobile */
   gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px;
+  /* Smaller padding for mobile */
 }
 
 @media (min-width: 1024px) {
   .tracker-container {
+    display: grid;
     grid-template-columns: 320px 1fr;
+    /* Fixed Sidebar + Fluid Main */
+    gap: 32px;
+    padding: 32px;
   }
 }
 
