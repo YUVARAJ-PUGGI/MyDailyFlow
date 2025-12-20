@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Plus, AlertTriangle, ArrowRight, Type, Tag, Flag, Clock, Calendar, Sparkles, Wand2 } from 'lucide-react';
-import { parseTaskCommand } from '../utils/nlp'; // Import Parser
+import { Plus, AlertTriangle, ArrowRight, Type, Tag, Flag, Clock } from 'lucide-react';
 import { toast } from 'react-toastify';
 import useForm from '../hooks/useForm';
 import { getCategoryNames } from '../constants/categories';
@@ -84,28 +83,6 @@ function AddTaskForm({ onAddTask, currentTasks = [] }) {
     }
   };
 
-  const handleMagicInput = (e) => {
-    const val = e.target.value;
-    setMagicInput(val);
-
-    const { title, time, duration } = parseTaskCommand(val);
-    const updates = {};
-    if (title) updates.title = title;
-    if (time) {
-      // Assuming time is in "HH:MM AM/PM" format or similar that can be split
-      const [timePart, periodPart] = time.split(' ');
-      updates.startTime = timePart;
-      updates.startPeriod = periodPart || 'AM'; // Default to AM if not specified
-      // For simplicity, setting end time to be duration later, or just leaving it for now
-      // A more robust parser would handle duration to calculate endTime
-    }
-    // Duration parsing would require more complex logic to update endTime based on startTime
-    // For now, we'll just update title and startTime/startPeriod
-    if (Object.keys(updates).length > 0) {
-      updateFormData(updates);
-    }
-  };
-
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
@@ -113,42 +90,9 @@ function AddTaskForm({ onAddTask, currentTasks = [] }) {
           <Plus size={24} color="white" />
         </div>
         <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white', margin: 0 }}>Add Task</h2>
-        <button
-          type="button"
-          onClick={() => setUseMagic(!useMagic)}
-          className="btn-icon"
-          style={{
-            marginLeft: 'auto',
-            color: useMagic ? 'var(--accent)' : 'var(--text-muted)',
-            borderColor: useMagic ? 'var(--accent)' : 'var(--glass-border)'
-          }}
-          title="Toggle Magic Command Mode"
-        >
-          <Wand2 size={18} />
-        </button>
       </div>
 
       <form onSubmit={handleSubmit}>
-        {useMagic && (
-          <div className="form-group-modern" style={{ animation: 'fadeIn 0.3s ease' }}>
-            <label className="form-label-modern" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent)' }}>
-              <Sparkles size={14} /> Magic Command
-            </label>
-            <div className="input-wrapper-modern">
-              <Wand2 size={18} className="input-icon" style={{ color: 'var(--accent)' }} />
-              <input
-                type="text"
-                value={magicInput}
-                onChange={handleMagicInput}
-                placeholder='e.g., "Review Code at 4pm for 90 mins"'
-                className="form-input-modern"
-                style={{ borderColor: 'var(--accent)', background: 'rgba(16, 185, 129, 0.05)' }}
-                autoFocus
-              />
-            </div>
-          </div>
-        )}
-
         {/* Task Title */}
         <div className="form-group-modern">
           <label className="form-label-modern">Task Title</label>
@@ -161,7 +105,7 @@ function AddTaskForm({ onAddTask, currentTasks = [] }) {
               onChange={handleChange}
               placeholder="e.g., Solve 5 DSA problems"
               maxLength={100}
-              disabled={isSubmitting || useMagic}
+              disabled={isSubmitting}
               className="form-input-modern"
             />
           </div>

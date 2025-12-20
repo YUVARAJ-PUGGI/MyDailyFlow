@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'; // Refresh
 
 import PropTypes from 'prop-types';
-import { ArrowRight, Zap, Shield, BarChart3, Code, Cpu, BookOpen } from 'lucide-react';
+import { Zap, Shield, BarChart3, Code, Cpu, BookOpen, ArrowRight } from 'lucide-react';
 import Logo from './Logo';
 import InstallPWA from './InstallPWA';
 
@@ -55,18 +55,17 @@ function LandingPage({ onGetStarted }) {
           </div>
 
           <h1 className="hero-title">
-            Own Your Day.<br />
-            <span className="text-gradient">Master Your Craft.</span>
+            Plan Your Day.<br />
+            <span className="text-gradient">Build Your Future.</span>
           </h1>
 
           <p className="hero-subtitle">
-            The ultra-premium schedule tracker for high-performance engineers.
-            Gamified, smart, and designed for deep work.
+            A smart schedule and habit tracker designed for engineering students to balance coding practice, projects, exams, fitness, and life — all in one place.
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-            <button className="cta-button" onClick={onGetStarted}>
-              Initialize System <Rocket size={20} />
+            <button className="cta-button" onClick={onGetStarted} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              Start Planning Today <ArrowRight size={20} />
             </button>
 
             {/* PWA Install Button (Only shows if compatible) */}

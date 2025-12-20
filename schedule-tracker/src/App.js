@@ -30,7 +30,7 @@ function App() {
     <GamificationProvider>
       <ThemeProvider>
         <div className="App">
-          <ScheduleTracker />
+          <ScheduleTracker onBackToHome={() => setShowLanding(true)} />
           <ToastContainer position="bottom-right" theme="colored" />
         </div>
       </ThemeProvider>
